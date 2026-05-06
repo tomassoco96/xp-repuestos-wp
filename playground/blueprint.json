@@ -1,0 +1,62 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "XP Repuestos — Preview del child theme",
+		"description": "WordPress + Blocksy + WooCommerce + child theme XP Repuestos. Lleva 30-60 seg en cargar todo. No tiene checkout configurado — es solo para ver el diseño.",
+		"author": "TomerClicks"
+	},
+	"preferredVersions": {
+		"php": "8.2",
+		"wp": "latest"
+	},
+	"phpExtensionBundles": ["kitchen-sink"],
+	"features": {
+		"networking": true
+	},
+	"login": true,
+	"landingPage": "/",
+	"steps": [
+		{
+			"step": "installTheme",
+			"themeData": {
+				"resource": "wordpress.org/themes",
+				"slug": "blocksy"
+			}
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "woocommerce"
+			}
+		},
+		{
+			"step": "unzip",
+			"zipFile": {
+				"resource": "url",
+				"url": "https://github.com/tomassoco96/xp-repuestos-wp/archive/refs/heads/main.zip"
+			},
+			"extractToPath": "/wordpress/wp-content/themes"
+		},
+		{
+			"step": "mv",
+			"fromPath": "/wordpress/wp-content/themes/xp-repuestos-wp-main",
+			"toPath": "/wordpress/wp-content/themes/xp-repuestos"
+		},
+		{
+			"step": "activateTheme",
+			"themeFolderName": "xp-repuestos"
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php\nrequire '/wordpress/wp-load.php';\n\n// Esperar a que WC esté disponible.\nif ( ! function_exists( 'wc_get_product' ) ) {\n\trequire_once WP_PLUGIN_DIR . '/woocommerce/woocommerce.php';\n}\n\n// Crear categorías de producto.\n$cats = array(\n\t'cascos'      => 'Cascos',\n\t'motor'       => 'Motor',\n\t'electrico'   => 'Eléctrico',\n\t'rodante'     => 'Rodante y suspensión',\n\t'tornilleria' => 'Tornillería',\n);\nforeach ( $cats as $slug => $name ) {\n\tif ( ! get_term_by( 'slug', $slug, 'product_cat' ) ) {\n\t\twp_insert_term( $name, 'product_cat', array( 'slug' => $slug ) );\n\t}\n}\n\n// Crear productos demo (subset del scrape).\n$demo = array(\n\tarray( 'Casco integral Vertigo V32 Vanguard Brillante', 57983, 'cascos', 'Casco integral Vertigo V32 Vanguard. Visera anti-rayas y forro lavable.' ),\n\tarray( 'Casco abierto Vertigo V10 Fluid Negro', 34378, 'cascos', 'Casco abierto Vertigo V10 Fluid. Liviano y ventilado para uso diario.' ),\n\tarray( 'Kit pistón completo Honda CG 150', 9695, 'motor', 'Kit pistón Honda CG 150 / Titan 150. Pistón + aros + perno + seguros.' ),\n\tarray( 'Kit pistón completo Yamaha YBR 125', 9530, 'motor', 'Kit pistón Yamaha YBR 125 / Factor. Pistón + aros + perno + seguros.' ),\n\tarray( 'Kit pistón Zanella RX 150', 10025, 'motor', 'Kit pistón completo para Zanella RX 150 y compatibles.' ),\n\tarray( 'Caja cambios Zanella RX / Motomel CG 150', 34371, 'motor', 'Caja de cambios para Zanella RX, Motomel CG S2, Skua y Hunter.' ),\n\tarray( 'Tablero Honda XR 250 Tornado', 116885, 'electrico', 'Tablero original Honda XR 250 Tornado.' ),\n\tarray( 'Tablero Honda CG Titan 150', 28181, 'electrico', 'Tablero Honda CG Titan 150 / Motomel CG 150 S2.' ),\n\tarray( 'Faro auxiliar 16 LEDs rectangular', 7532, 'electrico', 'Faro auxiliar rectangular con 16 LEDs. Moto, auto, camioneta.' ),\n\tarray( 'Maza rueda trasera Keller Crono Classic 110', 46591, 'rodante', 'Maza rueda trasera completa para Keller Crono Classic 110.' ),\n\tarray( 'Eje rueda delantera Honda CG Titan 150', 4196, 'rodante', 'Eje delantero con separador para Honda CG Titan 150.' ),\n\tarray( 'Juego rayos 4.0 x 165 mm x 36 unidades', 9497, 'rodante', 'Juego de 36 rayos con niples, 4.0 mm x 165 mm.' ),\n\tarray( 'Tornillos corona Smash 110 x 4 unidades', 1618, 'tornilleria', 'Set de 4 tornillos para corona de Gilera Smash 110.' ),\n\tarray( 'Tuerca autofrenante eje Smash 110', 2290, 'tornilleria', 'Tuerca autofrenante para eje de Gilera Smash 110.' ),\n);\n\nforeach ( $demo as $i => $row ) {\n\t[ $name, $price, $cat_slug, $desc ] = $row;\n\t$existing = get_page_by_title( $name, OBJECT, 'product' );\n\tif ( $existing ) continue;\n\n\t$product = new WC_Product_Simple();\n\t$product->set_name( $name );\n\t$product->set_regular_price( $price );\n\t$product->set_description( $desc );\n\t$product->set_short_description( $desc );\n\t$product->set_status( 'publish' );\n\t$product->set_catalog_visibility( 'visible' );\n\t$product->set_stock_status( 'instock' );\n\t$product->set_featured( $i < 6 );\n\t$pid = $product->save();\n\n\t$term = get_term_by( 'slug', $cat_slug, 'product_cat' );\n\tif ( $term ) {\n\t\twp_set_object_terms( $pid, $term->term_id, 'product_cat' );\n\t}\n}\n\n// Settings WooCommerce.\nupdate_option( 'woocommerce_currency', 'ARS' );\nupdate_option( 'woocommerce_price_decimal_sep', ',' );\nupdate_option( 'woocommerce_price_thousand_sep', '.' );\nupdate_option( 'woocommerce_price_num_decimals', '0' );\nupdate_option( 'woocommerce_currency_pos', 'left_space' );\n\n// Permalinks bonitos.\nupdate_option( 'permalink_structure', '/%postname%/' );\nflush_rewrite_rules( true );\n\n// Configurar página shop.\n$shop_page = get_posts( array( 'post_type' => 'page', 'name' => 'tienda' ) );\nif ( ! empty( $shop_page ) ) {\n\tupdate_option( 'woocommerce_shop_page_id', $shop_page[0]->ID );\n}\n\necho 'Setup XP Repuestos OK';\n"
+		},
+		{
+			"step": "setSiteOptions",
+			"options": {
+				"blogname": "XP Repuestos",
+				"blogdescription": "Repuestos y accesorios para motos en Argentina"
+			}
+		}
+	]
+}

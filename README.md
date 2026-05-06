@@ -166,6 +166,35 @@ xp-repuestos-wp/
 - ✅ El paquete está en npm bajo el namespace `@automattic/` — verificable en https://www.npmjs.com/package/@automattic/mcp-wordpress-remote.
 - ⚠️ Antes del `npx`, revisar el package.json del MCP por si tiene postinstall scripts sospechosos. La política sana es **siempre auditar antes de correr** un paquete que no es nuestro.
 
+## Cómo previsualizar el theme sin instalar nada
+
+Ver el diseño en acción **antes** de tener accesos al WP del cliente:
+
+### Opción 1 — WordPress Playground (en navegador, 30-60 seg)
+
+WordPress Playground corre WP en WASM dentro del navegador (proyecto oficial de WordPress.org). Le pegás este link y se levanta WP + Blocksy + WooCommerce + este child theme con 14 productos demo cargados:
+
+**👉 [Abrir preview en Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/tomassoco96/xp-repuestos-wp/main/playground/blueprint.json)**
+
+Notas:
+- La carga inicial demora 30-60 seg porque baja WP, Blocksy y WooCommerce sobre la marcha.
+- Es una sesión efímera — todo lo que cambies en la preview se pierde al cerrar la pestaña.
+- No hay checkout funcional (no tiene sentido en preview), solo el catálogo + diseño.
+- Si querés ver el admin, agregá `/wp-admin/` al final de la URL del Playground.
+
+### Opción 2 — Local con `wp-now` (requiere Node.js)
+
+```bash
+# En la carpeta del child theme
+npx @wp-now/wp-now start
+```
+
+`wp-now` levanta WP local en `http://localhost:8881` con el theme actual cargado. Hay que instalar Blocksy y WooCommerce manualmente desde el admin la primera vez.
+
+### Opción 3 — Local con LocalWP (app gráfica)
+
+Descargar [Local](https://localwp.com/) (gratis), crear un sitio, copiar este folder a `wp-content/themes/xp-repuestos/`, instalar Blocksy + WooCommerce desde el admin, activar el child theme.
+
 ## Próximos pasos sin accesos del cliente
 
 Lo que SÍ se puede hacer hoy sin accesos:
