@@ -1,0 +1,21 @@
+{
+  "_comment": "Plantilla para configurar el MCP de WordPress en Claude Code cuando lleguen los accesos al WP del cliente. Copiar este archivo a .mcp-config.local.json (gitignorado) y completar.",
+  "_install_steps": [
+    "1. En el WP admin: Users -> Profile -> Application Passwords -> crear una nueva con nombre 'Claude Code'.",
+    "2. Copiar el password generado (formato xxxx xxxx xxxx xxxx).",
+    "3. Pegar abajo en wpAppPassword.",
+    "4. Ejecutar `npx -y @automattic/mcp-wordpress-remote` para probar conexión.",
+    "5. Si funciona, agregar al ~/.claude.json o settings.json del proyecto."
+  ],
+  "mcpServers": {
+    "wordpress": {
+      "command": "npx",
+      "args": ["-y", "@automattic/mcp-wordpress-remote"],
+      "env": {
+        "WP_API_URL": "https://xprepuestos.com.ar",
+        "WP_API_USERNAME": "TU_USER_WP",
+        "WP_API_PASSWORD": "xxxx xxxx xxxx xxxx xxxx xxxx"
+      }
+    }
+  }
+}

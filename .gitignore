@@ -1,0 +1,33 @@
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# WP local (si se prueba en Local by Flywheel / XAMPP / DDEV)
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/backups/
+
+# Build artifacts
+node_modules/
+dist/
+build/
+
+# Secrets
+.env
+.env.local
+*.key
+*.pem
+
+# Claude / MCP local config
+.mcp-config.local.json
+.claude/

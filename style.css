@@ -1,0 +1,16 @@
+/*
+Theme Name: XP Repuestos
+Theme URI: https://github.com/tomassoco96/xp-repuestos-wp
+Description: Child theme custom de Blocksy para XP Repuestos — repuestos y accesorios para motos en Argentina. Aplica la identidad oficial de marca (paleta carbón + rojo, tipografía Montserrat + Saira) y suma motion premium sobre WooCommerce.
+Author: TomerClicks
+Author URI: https://tomerclicks.com
+Template: blocksy
+Version: 1.0.0
+Requires at least: 6.5
+Requires PHP: 8.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: xp-repuestos
+*/
+
+/* Estilos reales en assets/css/theme.css — cargados por wp_enqueue_style en inc/enqueue.php */
